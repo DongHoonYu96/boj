@@ -1,5 +1,6 @@
 package boj;
 
+//백준 1110번
 import java.util.Scanner;
 
 public class Main {
