@@ -1,44 +1,54 @@
-// Authored by : BaaaaaaaaaaarkingDog
-// Co-authored by : -
-// http://boj.kr/ef22176f28054f269d7a61e4356f3660
 #include <bits/stdc++.h>
 using namespace std;
 
-int main(void) {
-  ios::sync_with_stdio(0);
-  cin.tie(0);
-  
-  queue<int> Q;
-  int n;
-  cin >> n;
-  while(n--){
-    string q;
-    cin >> q;
-    if(q=="push"){
-      int val;
-      cin >> val;
-      Q.push(val);
-    }
-    else if(q=="pop"){
-      if(Q.empty()) cout << -1 << '\n';
-      else{
-        cout << Q.front() << '\n';
-        Q.pop();
-      }
-    }
-    else if(q=="size"){
-      cout << Q.size() << '\n';
-    }
-    else if(q=="empty"){
-      cout << Q.empty() << '\n';
-    }    
-    else if(q=="front"){
-      if(Q.empty()) cout << -1 << '\n';
-      else cout << Q.front() << '\n';
-    }
-    else{ // back
-      if(Q.empty()) cout << -1 << '\n';
-      else cout << Q.back() << '\n';
-    }
-  }
+int n;
+queue<int> q;
+
+int main() {
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+
+	cin >> n;
+	while (n--) {
+		string op="";
+		cin >> op;
+		if (op == "push") {
+			int temp;
+			cin >> temp;
+			q.push(temp);
+		}
+		else if (op == "pop") {
+			if (q.empty()) {
+				cout << -1 << "\n";
+				continue;
+			}
+			cout << q.front() << "\n";
+			q.pop();
+		}
+		else if (op == "size") {
+			cout << q.size() << "\n";
+		}
+		else if (op == "empty") {
+			if (q.empty()) {
+				cout << 1 << "\n";
+			}
+			else {
+				cout << 0 << "\n";
+			}
+		}
+		else if (op == "front") {
+			if (q.empty()) {
+				cout << -1 << "\n";
+				continue;
+			}
+			cout << q.front() << "\n";
+		}
+		else if (op == "back") {
+			if (q.empty()) {
+				cout << -1 << "\n";
+				continue;
+			}
+			cout << q.back() << "\n";
+		}
+	}
 }
