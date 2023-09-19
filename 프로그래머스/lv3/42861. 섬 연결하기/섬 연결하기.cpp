@@ -24,6 +24,7 @@ void union_parent(int node1, int node2){
     int p2=get_parent(node2);
     
     //노드숫자가 작은쪽으로 병합
+    //주의: node1(자신)이 아니라 p1(자신의부모)의 부모를갱신해야함.
     if(p1>p2){
         parent[p1]=p2;
     }
@@ -49,7 +50,7 @@ int solution(int n, vector<vector<int>> costs) {
     int edge_count=0;
     for(auto v:costs){
         //if(edge_count>=n-1) break;
-        if(find(v[0],v[1])) continue;
+        if(find(v[0],v[1])) continue;   //같은그룹이면 == 연결시 사이클을 만들면 pass
         union_parent(v[0],v[1]);
         answer+=v[2];
         
