@@ -39,19 +39,13 @@ vector<int> solution(vector<string> info, vector<string> query) {
     
     for(auto i : info){
         vector<string> ret=split(i," ");
-        //v.push_back({ret[0],ret[1],ret[2],ret[3],ret[4]});
         go("",0,ret); //2^4가지 경우의수의 맵에 점수를 넣는함수
     }
     
     for(auto item : m){
         sort(m[item.first].begin(),m[item.first].end());
     }
-//     // for(auto a : v){
-//     //     //cout<<1;
-//     //     cout<<a.lan<<" "<<a.bf<<" "<<a.js<<" "<<a.food<<" "<<a.score<<"\n";
-//     // }
-
-    
+ 
     for(int i=0;i<query.size();++i){
         vector<string>ret=split(query[i]," ");
         string s="";
