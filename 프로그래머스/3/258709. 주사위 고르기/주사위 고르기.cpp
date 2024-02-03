@@ -1,136 +1,85 @@
-#include <iostream>
-#include <string>
-#include <vector>
-#include <map>
+#include <bits/stdc++.h>
+
 using namespace std;
+vector<int> arrA,arrB;
+vector<vector<int>> dice;
+int n;
+int maxA, vis[6];
 
-vector<vector<int>> dDice;
-vector<bool> divideTeam;
-
-vector<int> teamA;
-vector<int> teamB;
-
-map<int, int> scoreCntA;
-map<int, int> scoreCntB;
-
-typedef map<int, int>::iterator iter;
-
-int gs = 1;
-int maxWin = 0;
-vector<int> answer;
-
-int tmpScore;
-void settingMap(bool tAfB, int cnt) {
-    if (cnt == teamA.size()) {
-        if (tAfB) {
-            ++scoreCntA[tmpScore];
-        }
-        else {
-            ++scoreCntB[tmpScore];
-        }
+void go(int depth, int val, vector<int> &idxs){
+    cout<<depth<<" "<<val<<"\n";
+    if(depth==n/2){
+        arrA.push_back(val);
         return;
     }
-    for (int i = 0; i < 6; i++) {
-        if (tAfB) tmpScore += dDice[teamA[cnt]][i];
-        else tmpScore += dDice[teamB[cnt]][i];
-        settingMap(tAfB, cnt + 1);
-        if (tAfB) tmpScore -= dDice[teamA[cnt]][i];
-        else tmpScore -= dDice[teamB[cnt]][i];
+    
+    for(int i=0;i<6;++i){
+        if(vis[i]) continue;
+        vis[i]=1;
+        go(depth+1,val+dice[idxs[depth]][i],idxs);
+        vis[i]=0;
     }
 }
 
-void DFS(int cnt, int idx) {
-    if (cnt == dDice.size() / 2) {
-        teamA = vector<int>();
-        teamB = vector<int>();
-        for (int i = 0; i < divideTeam.size(); i++) {
-            if (divideTeam[i]) teamA.push_back(i);
-            else teamB.push_back(i);
-        }
-        scoreCntA.clear();
-        scoreCntB.clear();
-
-        settingMap(true, 0);
-        settingMap(false, 0);
-
-        scoreCntB[0] = 0;
-        scoreCntB[10000] = 0;
-
-        vector<int> bB = vector<int>(scoreCntB.size(), 0);
-        iter it = scoreCntB.begin();
-        int iii = 0;
-        bB[iii++] = it->first;
-        ++it; iter previt = scoreCntB.begin();
-        for (; it != scoreCntB.end(); it++) {
-            bB[iii++] = it->first;
-            it->second += previt->second;
-            ++previt;
-        }
-
-        int winA = 0;
-        int draw = 0;
-        int winB = 0;
-        for (iter it = scoreCntA.begin(); it != scoreCntA.end(); it++) {
-
-            int left = 0, right = bB.size() - 1;
-            while (left < right) {
-                int mid = (left + right) / 2;
-                if (it->first <= bB[mid]) {
-                    right = mid;
-                }
-                else {
-                    left = mid + 1;
-                }
-            }
-
-            if (bB[right] == it->first) {
-                int wA = it->second * scoreCntB[bB[right - 1]];
-                int dr = it->second * (scoreCntB[bB[right]] - scoreCntB[bB[right - 1]]);
-                winA += wA;
-                draw += dr;
-            }
-            else {
-                int wA = it->second * scoreCntB[bB[right - 1]];
-                winA += wA;
-            }
-        }
-        winB = gs - (winA + draw);
-
-        if (winA > winB) {
-            if (winA > maxWin) {
-                maxWin = winA;
-                answer = teamA;
-            }
-        }
-        else if (winB > winA) {
-            if (winB > maxWin) {
-                maxWin = winB;
-                answer = teamB;
-            }
-        }
+void go2(int depth, int val, vector<int> &idxs){
+    if(depth==n/2){
+        arrB.push_back(val);
         return;
     }
-
-    for (int i = idx; i < dDice.size(); i++) {
-        divideTeam[i] = true;
-        DFS(cnt + 1, i + 1);
-        divideTeam[i] = false;
+    
+    for(auto idx : idxs){
+        for(int i=0;i<6;++i){
+            go(depth+1,val+dice[idx][i],idxs);
+        }
+        
     }
 }
 
-vector<int> solution(vector<vector<int>> dice) {
-    dDice = dice;
-    divideTeam = vector<bool>(dice.size(), false);
-
-    for (int i = 0; i < dice.size(); i++) {
-        gs *= 6;
-    }
-
-    divideTeam[0] = true;
-    DFS(1, 1);
-
-    for (int i = 0; i < answer.size(); i++) {
-        ++answer[i];
-    }
+vector<int> solution(vector<vector<int>> _dice) {
+    dice=_dice;
+    vector<int> answer;
+    n=dice.size();
+    vector<int> v;
+    for(int i=0;i<n/2;++i) v.push_back(0);
+    for(int i=0;i<n/2;++i) v.push_back(1);
+    
+    //1. A가 가져갈 주사위 선택하기(1)
+    //1 1 0 0
+    do{
+        vector<int> a,b;
+        for(int i=0;i<n;++i){
+            if(v[i])
+                a.push_back(i); //a가가져갈 주사위의 인덱스저장
+            else
+                b.push_back(i); //b가가져갈 주사위의 인덱스저장
+        }
+        
+        arrA.clear();
+        arrB.clear();
+        go(0,0,a);
+        go2(0,0,b);
+        
+        sort(arrA.begin(),arrA.end());
+        sort(arrB.begin(),arrB.end());
+        
+        //for(auto i : arrA) cout<<i<<" ";
+        //cout<<"\n";
+        
+        int winA=0;
+        for(auto i : arrA){
+            winA+=(arrB.end()-lower_bound(arrB.begin(),arrB.end(),i));
+            //cout<<winA<<"\n";
+        }
+        if(winA>maxA){
+            answer.clear();
+            for(auto i : a){
+                answer.push_back(i+1);
+            }
+            maxA=winA;
+        }
+    }while(next_permutation(v.begin(),v.end()));
+    
+    
+    //2. 가져간 주사위를 굴린 부분 계산
     return answer;
 }
