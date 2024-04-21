@@ -21,13 +21,13 @@ int main() {
         ret = max(ret, e - s + 1);
 
         if (ss.size() <= n) {
-            e += 1;
+            e++;
             if (e < str.size() && ss.find(str[e]) == ss.end()) {
                 ss.insert(str[e]);
             }
         }
         if (ss.size() > n) {
-            s = s + 1;
+            s++;
             e = s;
             ss.clear();
             ss.insert(str[s]);
