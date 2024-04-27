@@ -45,8 +45,8 @@ int main() {
 			cin >> w[i][j];
 		}
 	}
-	memset(dp, -1, sizeof(dp));
-	//fill(&dp[0][0], &dp[0][0] + 17 * (1 << 17), 987654321);
+	//memset(dp, -1, sizeof(dp));
+	fill(&dp[0][0], &dp[0][0] + 16 * (1 << 16), -1);
 	//[현재 : 0번도시] [0번도시 방문표시 비트키기]
 	cout << dfs(0, 1);
 
