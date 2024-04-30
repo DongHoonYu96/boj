@@ -5,7 +5,7 @@ typedef long long ll;
 
 ll n,m, a[54][54], dp[54][54], vis[54][54];
 
-//좌표, 해당좌표에 온 횟수 : 그상태일때, 움직인 최대 횟수
+//좌표 : 그상태일때, 움직인 최대 횟수
 ll dfs(int y, int x) {
     if (y < 0 || x < 0 || y >= n || x >= m) return 0;
     if (a[y][x] == -1) return 0;
@@ -38,47 +38,6 @@ ll dfs(int y, int x) {
     return dp[y][x];
 }
 
-//해당배열이 무한대 와리가리인지
-int check(int y, int x) {
-    if (y < 0 || x < 0 || y >= n || x >= m) return 0;
-    if (a[y][x] == -1) return 0;
-
-    check(y + a[y][x], x) + 1;
-    check(y, x + a[y][x]) + 1;
-    check(y - a[y][x], x) + 1;
-    check(y, x - a[y][x]) + 1;
-
-    return 1;
-}
-//상하좌위 같은값이 있는지, 
-int check2() {
-    for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < m; ++j) {
-            if (a[i][j] == -1) continue; //구멍은 제외
-            //위에같은값이 있는지
-            if (i - a[i][j] >= 0 && a[i - a[i][j]][j] == a[i][j]) {
-                cout << -1;
-                return 1;
-            }
-            //하 같은값이 있는지
-            if (i + a[i][j] < n && a[i + a[i][j]][j] == a[i][j]) {
-                cout << -1;
-                return 1;
-            }
-            //좌 같은값이 있는지
-            if (j - a[i][j] >= 0 && a[i][j - a[i][j]] == a[i][j]) {
-                cout << -1;
-                return 1;
-            }
-            //우 같은값이 있는지
-            if (j + a[i][j] < m && a[i][j + a[i][j]] == a[i][j]) {
-                cout << -1;
-                return 1;
-            }
-        }
-    }
-    return 0;
-}
 int main() {
     ios_base::sync_with_stdio(0);
     cin.tie(0);
@@ -97,31 +56,7 @@ int main() {
 
     ll ret= dfs(0, 0);
 
-    for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < m; ++j) {
-            if (a[i][j] == -1) continue; //구멍은 제외
-            //위에같은값이 있는지 && 방문됬는지
-            if (i - a[i][j] >= 0 && a[i - a[i][j]][j] == a[i][j] && dp[i][j]!=-1) {
-                cout << -1;
-                return 0;
-            }
-            //하 같은값이 있는지
-            if (i + a[i][j] < n && a[i + a[i][j]][j] == a[i][j] && dp[i][j] != -1) {
-                cout << -1;
-                return 0;
-            }
-            //좌 같은값이 있는지
-            if (j - a[i][j] >= 0 && a[i][j - a[i][j]] == a[i][j] && dp[i][j] != -1) {
-                cout << -1;
-                return 0;
-            }
-            //우 같은값이 있는지
-            if (j + a[i][j] < m && a[i][j + a[i][j]] == a[i][j] && dp[i][j] != -1) {
-                cout << -1;
-                return 0;
-            }
-        }
-    }
+
     cout << ret;
     return 0;
 }
