@@ -59,11 +59,9 @@ int main(void) {
     cin >> t;
     while (t--) {
         unused = 2;
-        /*memset(nxt, -1, sizeof(nxt));
-        memset(chk, 0, sizeof(chk));*/
-        fill(chk, chk + MX, 0);
-        for (int i = 0; i < MX; i++)
-            fill(nxt[i], nxt[i] + 10, -1);
+        memset(nxt, -1, sizeof(nxt));
+        memset(chk, 0, sizeof(chk));
+
         cin >> n;
         int flag = 1;
 
