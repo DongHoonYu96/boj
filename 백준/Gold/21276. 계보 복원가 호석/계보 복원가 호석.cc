@@ -24,42 +24,49 @@ int main() {
         cin >> s1 >> s2;
         adj[s2].push_back(s1); //상도의 자식 : 호석
         adj[s1]; //자식없어도 초기화는 해줘야함! -> 0명일때 출력
-        indeg[s2]++; //상도한테 화살표들어옴
-        outdeg[s1]++; //호석에서 화살표나감
+        indeg[s1]++; //상도 -> 호석, 자식한테 화살표 들어옴
     }
 
-    //outdeg가 0 -> 조상
+    //indeg가 0 -> 조상
     vector<string> josang;
     for (auto item : adj) {
-        if (outdeg[item.first] == 0) {
+        if (indeg[item.first] == 0) {
             josang.push_back(item.first);
         }
     }
 
+    sort(josang.begin(), josang.end());
+
+    queue<string> q;
     cout << josang.size()<<"\n";
     for (auto s : josang) {
         cout << s << " ";
+        q.push(s);
     }cout << "\n";
 
-    //outdegree의 차이가 1-> 직계자식!
-    for (auto item : adj) { //모든 후손들에대해 item : 부모이름, {후손들이름}
-        vector<string> jasik;
-        for (auto s : item.second) {
-            if (outdeg[s] - outdeg[item.first] == 1) {
-                jasik.push_back(s);
+    map<string, vector<string>> res; //key의 직속자식들
+    //초기값 : indeg가 0인 조상들
+    while (q.size()) {
+        auto cur = q.front(); q.pop();
+        res[cur]; //맵 초기 할당
+        //모든 후손에대해
+        //나와 연결을 끊으면 indeg가 0이다(현재1) -> 직속자식이다!
+        for (auto s : adj[cur]) {
+            if (indeg[s] == 1) {
+                res[cur].push_back(s);
+                q.push(s);
             }
+            indeg[s]--; //연결끊기
         }
-        cout << item.first << " " << jasik.size() << " ";
-        for (auto s : jasik) {
-            cout << s << " ";
-        }cout << "\n";
-        //cout << item.first << " " << indeg[item.first] << " ";
-        //for (auto s : item.second) {
-        //    cout << s << " ";
-        //}cout << "\n";
     }
 
-
+    for (auto item : res) {
+        cout << item.first << " " << item.second.size() << " ";
+        sort(item.second.begin(), item.second.end());
+        for (auto child : item.second) {
+            cout << child << " ";
+        }cout << "\n";
+    }
     return 0;
 
 }
