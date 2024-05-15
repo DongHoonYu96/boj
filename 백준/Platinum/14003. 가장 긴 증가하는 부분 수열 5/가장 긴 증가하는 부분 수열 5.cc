@@ -1,8 +1,9 @@
 #include <bits/stdc++.h>
-#define endl "\n"
+#define endl "\n";
 
 using namespace std;
 typedef long long ll;
+
 
 ll n, lis[1000000 + 4], len, num;
 ll Index_Arr[1000000 + 4]; //index[3]=1 : 원본3번, lis 1번
@@ -14,10 +15,6 @@ int main() {
 
     memset(Index_Arr, -1, sizeof(Index_Arr));
 
-    // lis의 길이를 찾음
-    // index_arr에 해당값이 lis 몇번인지 기록 
-    // ex: index_arr[3]=1  // 원본3번이 lis 1번임
-    // 0-idx 사용
     cin >> n;
     for (int i = 0; i < n; i++) {
         cin >> num;
@@ -28,12 +25,16 @@ int main() {
         if (idx == len) len++; 
         lis[idx] = num;
 
-        // lis 배열 찾기 위한 로직 추가
+        //lis 배열 찾기위한 로직 추가
         Index_Arr[i] = idx;
+        
     }
-    cout << len << "\n";
+    cout << len<<"\n";
 
-    // index_Arr 배열을 탐색하면서
+    /*for (int i = 0; i < n; ++i) {
+        cout << Index_Arr[i] << " ";
+    }cout << endl;*/
+
     vector<ll> v;
     int find_idx = len - 1;
     for (int i = n-1 ; i >= 0; --i) { //--i 역순탐색 => 3 2 4 에서 2가 자동 pass됨!
@@ -48,3 +49,4 @@ int main() {
     }   
     return 0;
 }
+
