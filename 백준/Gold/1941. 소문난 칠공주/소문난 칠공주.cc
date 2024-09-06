@@ -1,180 +1,81 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+#include <bitset>
+
 using namespace std;
 
-char a[5][5];
-int v[5][5],ny, nx, ret,arr[25], isused[25],visited[5][5];
-int dx[] = {1,0,-1,0};
-int dy[] = {0,1,0,-1};
+const int N = 5;
+const int K = 7;
 
-////현재 k명 뽑았음, 좌표 , 뽑은사람카운팅
-//void dfs2(int k, int y ,int x, int Y, int S) {
-//	cout << "dfs :" <<k<<"/ " << y << " " << x << "\n";
-//
-//
-//	//v[y][x] = 1;
-//
-//	//임도연파가 4명이상 -> 가지치기
-//	if (Y >= 4) {
-//		return;
-//	}
-//
-//	if (k >= 6) {
-//		cout << "kkkkkkkkkkkkkkkkkk\n";
-//
-//		ret++;
-//		return;
-//	}
-//
-//	for (int i = 0; i < 4; ++i) {
-//		ny = y + dy[i];
-//		nx = x + dx[i];
-//		if (ny < 0 || ny >= 5 || nx < 0 || nx >= 5) continue;
-//		if (v[ny][nx]) continue;
-//		v[ny][nx] = 1;
-//		if (a[ny][nx] == 'Y') {
-//			dfs(k + 1, ny, nx, Y + 1, S);
-//		}
-//		if (a[ny][nx] == 'S') {
-//			dfs(k + 1, ny, nx, Y, S + 1);
-//
-//		}
-//		v[ny][nx] = 0;
-//
-//
-//	}
-//}
+vector<string> grid(N);
+vector<int> selected;
+int answer = 0;
 
-void dfs(int y, int x) {
-	visited[y][x] = 1;
+// 비트마스크를 사용하여 방문 여부를 빠르게 체크
+bitset<25> visited;
 
+// 4방향 이동을 위한 배열
+const int dx[4] = {-1, 1, 0, 0};
+const int dy[4] = {0, 0, -1, 1};
 
-	for (int i = 0; i < 4; ++i) {
-		ny = y + dy[i];
-		nx = x + dx[i];
-		if (ny < 0 || ny >= 5 || nx < 0 || nx >= 5) continue;
-		if (visited[ny][nx]) continue;
-		if (v[ny][nx] == 0) continue;	//방문대상이 아니면 pass
-		
-		dfs(ny, nx);
-	}
-	return;
+// DFS를 사용하여 연결성 검사
+void dfs(int x, int y, int& count) {
+    visited[x * N + y] = true;
+    count++;
 
+    for (int i = 0; i < 4; ++i) {
+        int nx = x + dx[i], ny = y + dy[i];
+        if (nx >= 0 && nx < N && ny >= 0 && ny < N && !visited[nx * N + ny] && (selected[nx * N + ny] == 1)) {
+            dfs(nx, ny, count);
+        }
+    }
 }
 
-//현재까지 k개 뽑음
-//25C7 구현
-//i = 0 ~ 24 
-// n/5==y좌표 , n%5==x좌표로 사용하면 된다,
-void go(int k) {
-	if (k >= 7) {
-		fill(&v[0][0], &v[0][0] + 5 * 5, 0);
-		fill(&visited[0][0], &visited[0][0] + 5 * 5, 0);
+// 선택된 7명이 서로 연결되어 있는지 확인
+bool is_connected() {
+    visited.reset();
+    int count = 0;
+    for (int i = 0; i < N * N; ++i) {
+        if (selected[i] == 1) {
+            dfs(i / N, i % N, count);
+            break;
+        }
+    }
+    return count == K;
+}
 
-		int y_cnt=0;
-		int s_cnt = 0;
-		for (int i = 0; i < 7; ++i) {
-			//cout << arr[i] << " ";
-			int y = arr[i] / 5;
-			int x = arr[i] % 5;
+// 백트래킹을 사용한 조합 생성
+void backtrack(int idx, int s_count, int y_count) {
+    if (y_count > 3) return;  // 임도연파가 4명 이상이면 더 이상 진행하지 않음
+    if (s_count + y_count == K) {
+        if (s_count >= 4 && is_connected()) {
+            answer++;
+        }
+        return;
+    }
+    if (idx == N * N) return;
 
-			v[y][x] = 1;	//방문해야할곳 체크
-
-			if (a[y][x] == 'Y') y_cnt++;
-			if (a[y][x] == 'S') s_cnt++;
-
-		}
-		bool s_many = false;
-		if (s_cnt >= 4) s_many = true;
-
-		/////////////////////////////////////
-		dfs(arr[0] / 5, arr[0] % 5);
-
-		//for (int i = 0; i < 5; ++i) {
-		//	for (int j = 0; j < 5; ++j) {
-		//		cout << v[i][j];
-		//	}
-		//	cout << "\n";
-		//}
-		//cout << "ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ\n";
-
-		//for (int i = 0; i < 5; ++i) {
-		//	for (int j = 0; j < 5; ++j) {
-		//		cout << visited[i][j];
-		//	}
-		//	cout << "\n";
-		//}
-		//cout << "ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ\n";
-
-		bool all_adj = true;
-		for (int i = 0; i < 5; ++i) {
-			for (int j = 0; j < 5; ++j) {
-				if (visited[i][j] != v[i][j]) {
-					all_adj = false;
-					break;
-				}
-			}
-		}		
-
-		//cout << s_many << " " << all_adj<<"\n";
-		if (s_many && all_adj) ret++;
-		//cout << "\n";
-		return;
-	}
-
-	int st = 0;
-	if (k != 0) st = arr[k - 1]+1;
-
-	for (int i = st; i < 25; ++i) {
-		if (isused[i]) continue;
-		arr[k] = i;
-		isused[i] = 1;
-		go(k + 1);
-		isused[i] = 0;
-	}
-
+    // 현재 학생을 선택하는 경우
+    selected[idx] = 1;
+    backtrack(idx + 1, s_count + (grid[idx / N][idx % N] == 'S'), y_count + (grid[idx / N][idx % N] == 'Y'));
+    
+    // 현재 학생을 선택하지 않는 경우
+    selected[idx] = 0;
+    backtrack(idx + 1, s_count, y_count);
 }
 
 int main() {
-	ios_base::sync_with_stdio(0);
-	cin.tie(0);
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-	for (int i = 0; i < 5; ++i) {
-		string temp;
-		cin >> temp;
-		for (int j = 0; j < 5; ++j) {
-			a[i][j]= temp[j];
-		}
-	}
+    for (int i = 0; i < N; ++i) {
+        cin >> grid[i];
+    }
 
-	go(0);
+    selected.resize(N * N, 0);
+    backtrack(0, 0, 0);
 
-	//for (int i = 0; i < 5; ++i) {
-	//	for (int j = 0; j < 5; ++j) {
-	//		cout << a[i][j];
-	//	}
-	//	cout << "\n";
-	//}
+    cout << answer << endl;
 
-
-	//for (int i = 0; i < 5; ++i) {
-	//	for (int j = 0; j < 5; ++j) {
-	//		fill(&v[0][0], &v[0][0] + 5*5, 0);
-	//		if (v[i][j]) continue;
-	//		v[i][j] = 1;
-	//		if (a[i][j] == 'Y') {
-	//			dfs(0, i, j, 1, 0);
-	//		}
-	//		if (a[i][j] == 'S') {
-	//			dfs(0, i, j, 0, 1);
-
-	//		}
-	//		//v[i][j] = 0;
-
-	//		cout << "ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ\n";
-	//	}
-	//}
-
-
-
-	cout << ret;
+    return 0;
 }
