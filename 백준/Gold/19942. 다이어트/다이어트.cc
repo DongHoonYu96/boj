@@ -1,55 +1,59 @@
 #include <bits/stdc++.h>
-
 using namespace std;
+typedef long long ll;
 
-int n, m, mp, mf, ms, mv;
-int a[15][5];
-int ret = 987654321;
-vector<int> arr;
-
+int n,mp,mf,ms,mv;
+int arr[16][6];
+int ret=987654321; //최소비용구하기, 초기화=최대로
+map<int, vector<vector<int>>> m; // 비용별 정답들
 
 int main() {
-	cin.tie(0);
-	cin >> n >>  mp >> mf >> ms >> mv;
-	for (int i = 0; i < n; ++i) {
-		cin >> a[i][0] >> a[i][1] >> a[i][2] >> a[i][3]>>a[i][4];
-	}
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);
+    cin>>n>>mp>>mf>>ms>>mv;
+    
+    for(int i=0;i<n;++i) {
+        for(int j=0;j<5;++j) {
+            cin>>arr[i][j];
+        }
+    }
 
-	for (int subset = 1; subset < (1 << n); ++subset) {
-		int p = 0, f = 0, s = 0, v = 0, w=0;
-		vector<int> tmp;
-		for (int i = 0; i < n; ++i) {
-			if (subset & (1 << i)) {
-				p += a[i][0];
-				f += a[i][1];
-				s += a[i][2];
-				v += a[i][3];
-				w += a[i][4];
-				tmp.push_back(i+1);
-			}
-		}
-		//cout << p << " " << f << " " << s << " " << v << " \n";
-		if (p >= mp && f >= mf && s >= ms&& v>=mv) {
-			if (ret > w) {
-				ret = w;
-				arr = tmp;
-			}
-			if (ret == w) {
-				vector<vector<int>> vv;
-				vv.push_back(tmp);
-				vv.push_back(arr);
-				sort(vv.begin(), vv.end());
-				arr = vv[0];
-			}
-		}
-	}
+    //전체 부분집합에 대해( 1 ~ 2^n -1 ) ( 0 0 0 0 1  ~ 1 1 1 1 1 )
+    for(int subset = 1; subset < (1 << n); ++subset) {
+    // for(int subset = 8+4+2; subset <= 8+4+2; ++subset) {
+        int a=0,b=0,c=0,d=0, e=0;
+        vector<int> tmp; //정답 index들 후보
+        //한칸씩 보면서 비트가 켜져있는지 검사
+        //비트가 켜져있는경우 해당 재료를 선택
+        for(int i=0; i< n;++i) {
+            if(subset & (1<<i)) {
+                a+=arr[i][0];
+                b+=arr[i][1];
+                c+=arr[i][2];
+                d+=arr[i][3];
+                e+=arr[i][4];
+                tmp.push_back(i+1); // 1-idx로 바꾸기
+            }
+        }
+        if(a<mp || b<mf || c<ms || d<mv) continue;
+        if(ret >= e) { //현재가 더 싼경우
+            ret=e;
+            m[ret].push_back(tmp);
+        }
+    }
 
-	if (ret == 987654321) {
-		cout << -1;
-		return 0;
-	} 
-	cout << ret << "\n";
-	for (auto i : arr) cout << i << " ";
+    if(ret==987654321) {
+        cout<<-1;
+        return 0;
+    }
 
-	return 0;
+    cout<<ret<<"\n";
+    sort(m[ret].begin(),m[ret].end());
+    for(auto i : m[ret][0]) {
+        cout<<i<<" ";
+    }
+
+    
+    
+    return 0;
 }
