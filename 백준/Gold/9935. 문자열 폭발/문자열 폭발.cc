@@ -10,43 +10,21 @@ int main(){
    cin.tie(0);
 
    cin>>s>>t;
-
    int n = s.size();
    int len = t.size();
-
+   
+   string ret="";
    for(int i=0;i<n;++i) {
-      stk.push(s[i]);
-      //stack의 top과 target의 끝이 같으면 검사시작
-      if(stk.size() && stk.top()==s[i] && stk.size() >= len) {
-         string tmp="";
-         for(int j=0;j<len;++j) {
-            tmp+=stk.top();
-            stk.pop();
+      ret+=s[i];
+      if(len <= ret.size()) {
+         string sub = ret.substr(ret.size()-len,ret.size());
+         if(sub==t) {
+            ret.erase(ret.end()-len,ret.end());
          }
-         
-         reverse(tmp.begin(),tmp.end());
-         //원복
-         if(tmp!=t) {
-            for(int k=0;k<tmp.size();++k) {
-               stk.push(tmp[k]);
-            }
-         }
-         //같으면 원복을 안하면됨
       }
    }
-
-   string ret="";
-   while(stk.size()) {
-      ret+=stk.top();
-      stk.pop();
-   }
-   reverse(ret.begin(),ret.end());
-   if(ret=="") {
-      cout<<"FRULA";
-   }
-   else {
-      cout<<ret;
-   }
-
+   
+   if(!ret.size())cout << "FRULA" << "\n";
+   else cout << ret << "\n";
    return 0;
 }
