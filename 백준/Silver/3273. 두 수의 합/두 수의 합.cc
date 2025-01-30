@@ -1,31 +1,32 @@
 #include <bits/stdc++.h>
 using namespace std;
+typedef long long ll;
 
-int n, x, visited[2000004], ret;
-vector<int> v;
+ll n,x,ret; // 경우의수는 ll 박고 시작
+vector<ll> v;
 
-int main() {
-	cin >> n;
-	for (int i = 0; i < n; ++i) {
-		int temp = 0;
-		cin >> temp;
-		v.push_back(temp);
-		visited[temp] = 1;
-	}
-	cin >> x;
+int main(){
+   ios_base::sync_with_stdio(0);
+   cin.tie(0);
 
-	for (int i = 0; i < n; ++i) {
-		if (x < v[i]) continue;	
-		//목표보다 현재값이 큰경우 -> 불가
+   cin>>n;
 
-		if (visited[x - v[i]]) { //목표값이 잇으면 ret++
-			ret++;
-		}
-		else {
-			//pass
-		}
-	}
+   for(int i=0;i<n;++i) {
+      int tmp;
+      cin>>tmp;
+      v.push_back(tmp);
+   }
+   cin>>x;
 
-	cout << ret / 2;
+   sort(v.begin(),v.end());
 
+   for(int i=0;i<n;++i) {
+      if(binary_search(v.begin()+i+1,v.end(),abs(x-v[i]))) ret++;
+      // int idx = lower_bound(v.begin()+i+1,v.end(),abs(x-v[i]))-v.begin();
+      // if(idx!=n) ret++;
+   }
+   
+   cout<<ret;
+   
+   return 0;
 }
