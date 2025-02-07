@@ -1,28 +1,30 @@
 #include <bits/stdc++.h>
 using namespace std;
+typedef long long ll;
 
-int n, lis[1000000+1], len, num;
+int a[1000000+4], lis[1000000+4];
+int n,len;
 
-int main() {
-    ios_base::sync_with_stdio(0);
-    cin.tie(0);
 
-    cin >> n;
-    for (int i = 0; i < n; i++) {
-        cin >> num;
-        //1. num 이상인 idx를 찾음 -> 더 작은값이 들어오면, 작은값으로 교체함!
-        //lis(현재의 증가수열길이) 중에서
-        int idx = lower_bound(lis, lis + len, num) - lis;
-        if (idx==len) len++; //처음보는값인경우, lis길이+1
-        lis[idx] = num; 
-        /*for (int j = 0; j < n; j++) {
-            printf("%d ", lis[j]);
-        }
-        printf("\n");*/
-    }
-    printf("%d", len);
+int main(){
+   ios_base::sync_with_stdio(0);
+   cin.tie(0);
 
-    return 0;
+   cin>>n;
+   for(int i=0;i<n;++i) {
+      cin>>a[i];
+   }
+
+   for(int i=0;i<n;++i) {
+      int idx = lower_bound(lis,lis+len,a[i])-lis;
+
+      //개큰수 등장
+      if(idx==len) {
+         len++;
+      }
+      lis[idx]=a[i];
+   }
+   cout<<len;
+   
+   return 0;
 }
-
-
