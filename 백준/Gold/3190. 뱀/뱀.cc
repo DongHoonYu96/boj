@@ -57,9 +57,8 @@ int main() {
       vis[ny][nx]=1;
       dq.push_front({ny,nx});
 
-      if(sec == _time[idx].first) {
-         // dir+= _time[idx].second % 4;
-         dir = (dir + _time[idx].second) % 4;  // 수정된 부분
+      if(idx < _time.size() && sec == _time[idx].first) {
+         dir = (dir + _time[idx].second) % 4;
          idx++;
       }
    }
